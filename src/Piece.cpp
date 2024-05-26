@@ -115,7 +115,7 @@ void Piece::draw(sf::RenderWindow &window)
         sf::Color::Yellow,  // O
         sf::Color::Magenta, // S
         sf::Color::Cyan,    // T
-        sf::Color::Black    // Z
+        sf::Color::White    // Z
     };
 
     for (int i = 0; i < 4; ++i)

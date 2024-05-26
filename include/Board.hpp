@@ -17,4 +17,7 @@ private:
     int board[BOARD_HEIGHT][BOARD_WIDTH];
     sf::RectangleShape blocks[BOARD_HEIGHT][BOARD_WIDTH];
     bool gameOver;
+    sf::Texture blockTexture;      // Texture for blocks
+    sf::Texture backgroundTexture; // Texture for background
+    sf::Sprite backgroundSprite;   // Sprite for bac
 };

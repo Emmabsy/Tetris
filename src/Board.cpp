@@ -96,7 +96,6 @@ bool Board::isGameOver() const
 {
     return gameOver;
 }
-
 void Board::draw(sf::RenderWindow &window)
 {
     for (int i = 0; i < BOARD_HEIGHT; ++i)
@@ -126,7 +125,7 @@ void Board::draw(sf::RenderWindow &window)
                 color = sf::Color::Cyan;
                 break;
             case 7: // Z shape
-                color = sf::Color::Black;
+                color = sf::Color::White;
                 break;
             default: // Empty cell
                 color = sf::Color::Transparent;

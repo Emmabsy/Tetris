@@ -1,8 +1,24 @@
 #include "Game.hpp"
+#include "Game.hpp"
 
-Game::Game() : window(sf::VideoMode(300, 600), "Tetris"), timer(0), delay(0.5f)
+Game::Game() : timer(0), delay(0.5f), gameState(GameState::Playing)
+                                          
 {
     srand(static_cast<unsigned int>(time(0)));
+    if (!backgroundTexture.loadFromFile("/Users/admin/Documents/HUB/Gaming/Tetris/assets/background.png"))
+    {
+        // Handle loading error
+    }
+    // Calculate window size based on board size and tile size
+    int windowWidth = BOARD_WIDTH * BLOCK_SIZE;
+    int windowHeight = BOARD_HEIGHT * BLOCK_SIZE;
+    window.create(sf::VideoMode(windowWidth, windowHeight), "Tetris");
+    backgroundSprite.setTexture(backgroundTexture);
+    font.loadFromFile("path/to/font.ttf");
+    text.setFont(font);
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::Red);
+    text.setStyle(sf::Text::Bold);
 }
 
 void Game::run()
@@ -10,7 +26,10 @@ void Game::run()
     while (window.isOpen())
     {
         handleInput();
-        update();
+        if (gameState == GameState::Playing)
+        {
+            update();
+        }
         render();
     }
 }
@@ -26,49 +45,69 @@ void Game::handleInput()
         }
         else if (event.type == sf::Event::KeyPressed)
         {
-            if (event.key.code == sf::Keyboard::Up)
+            if (gameState == GameState::Playing)
             {
-                currentPiece.rotate();
-                if (currentPiece.collides(board))
+                if (event.key.code == sf::Keyboard::Up)
                 {
-                    // Undo rotation if collides
                     currentPiece.rotate();
-                    currentPiece.rotate();
-                    currentPiece.rotate();
-                }
-            }
-            else if (event.key.code == sf::Keyboard::Left)
-            {
-                currentPiece.move(-1, 0);
-                if (currentPiece.collides(board))
-                {
-                    // Undo move if collides
-                    currentPiece.move(1, 0);
-                }
-            }
-            else if (event.key.code == sf::Keyboard::Right)
-            {
-                currentPiece.move(1, 0);
-                if (currentPiece.collides(board))
-                {
-                    // Undo move if collides
-                    currentPiece.move(-1, 0);
-                }
-            }
-            else if (event.key.code == sf::Keyboard::Down)
-            {
-                currentPiece.move(0, 1);
-                if (currentPiece.collides(board))
-                {
-                    // Undo move if collides
-                    currentPiece.move(0, -1);
-                    board.placePiece(currentPiece.getX(), currentPiece.getY(), currentPiece.getShape());
-                    currentPiece.reset();
                     if (currentPiece.collides(board))
                     {
-                        // Game over condition
-                        window.close();
+                        currentPiece.rotate();
+                        currentPiece.rotate();
+                        currentPiece.rotate();
                     }
+                }
+                else if (event.key.code == sf::Keyboard::Left)
+                {
+                    currentPiece.move(-1, 0);
+                    if (currentPiece.collides(board))
+                    {
+                        currentPiece.move(1, 0);
+                    }
+                }
+                else if (event.key.code == sf::Keyboard::Right)
+                {
+                    currentPiece.move(1, 0);
+                    if (currentPiece.collides(board))
+                    {
+                        currentPiece.move(-1, 0);
+                    }
+                }
+                else if (event.key.code == sf::Keyboard::Down)
+                {
+                    currentPiece.move(0, 1);
+                    if (currentPiece.collides(board))
+                    {
+                        currentPiece.move(0, -1);
+                        board.placePiece(currentPiece.getX(), currentPiece.getY(), currentPiece.getShape());
+                        currentPiece.reset();
+                        if (currentPiece.collides(board))
+                        {
+                            gameState = GameState::GameOver;
+                        }
+                    }
+                }
+                else if (event.key.code == sf::Keyboard::P)
+                {
+                    gameState = GameState::Paused;
+                }
+            }
+            else if (gameState == GameState::Paused)
+            {
+                if (event.key.code == sf::Keyboard::P)
+                {
+                    gameState = GameState::Playing;
+                }
+                else if (event.key.code == sf::Keyboard::R)
+                {
+                    resetGame();
+                }
+            }
+            else if (gameState == GameState::GameOver)
+            {
+                if (event.key.code == sf::Keyboard::R)
+                {
+                    resetGame();
                 }
             }
         }
@@ -91,8 +130,7 @@ void Game::update()
             currentPiece.reset();
             if (currentPiece.collides(board))
             {
-                // Game over condition
-                window.close();
+                gameState = GameState::GameOver;
             }
         }
         timer = 0;
@@ -101,8 +139,34 @@ void Game::update()
 
 void Game::render()
 {
-    window.clear(sf::Color::White);
+    window.clear();
+    window.draw(backgroundSprite);
     board.draw(window);
-    currentPiece.draw(window);
+    if (gameState == GameState::Playing || gameState == GameState::Paused)
+    {
+        currentPiece.draw(window);
+    }
+
+    if (gameState == GameState::Paused)
+    {
+        text.setString("Paused\nPress P to resume\nPress R to restart");
+        text.setPosition(50, 250);
+        window.draw(text);
+    }
+    else if (gameState == GameState::GameOver)
+    {
+        text.setString("Game Over\nPress R to restart");
+        text.setPosition(50, 250);
+        window.draw(text);
+    }
+
     window.display();
+}
+
+void Game::resetGame()
+{
+    board.clear();
+    currentPiece.reset();
+    gameState = GameState::Playing;
+    timer = 0;
 }
