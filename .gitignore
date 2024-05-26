@@ -1,0 +1,84 @@
+# Ignore build directories
+/build/
+/bin/
+/obj/
+/out/
+
+# Ignore compiled binary files
+*.exe
+*.out
+*.app
+*.o
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+
+# Ignore SFML and other library binaries
+sfml-*.dll
+libsfml-*.so
+sfml-*.dylib
+
+# Ignore CMake generated files
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/Makefile
+
+# Ignore Visual Studio generated files
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.suo
+*.user
+*.opensdf
+*.VC.db
+*.VC.VC.opendb
+
+# Ignore Xcode generated files
+*.xcworkspace
+*.xcuserdata
+*.xccheckout
+*.xcuserstate
+*.xcodeproj
+
+# Ignore Code::Blocks generated files
+*.cbp
+*.layout
+*.depend
+
+# Ignore JetBrains CLion generated files
+.idea/
+
+# Ignore temporary files
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+*.sublime-workspace
+*.sublime-project
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+*.~lock.*
+*.directory
+*~
+
+# Ignore resource files if not needed
+/resources/*.png
+/resources/*.jpg
+/resources/*.bmp
+/resources/*.tga
+/resources/*.wav
+/resources/*.mp3
+/resources/*.ogg
+
+# Ignore the executable
+tetris
